@@ -2,7 +2,6 @@
 
 #include <cstdio>
 #include <memory>
-#include <mutex>
 #include <string>
 
 class Logger {

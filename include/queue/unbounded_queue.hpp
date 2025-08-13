@@ -1,12 +1,18 @@
 #pragma once
 #include "queue/queue.hpp"
+#include <condition_variable>
+#include <mutex>
+#include <queue>
 
 namespace dispatcher::queue {
 
 class UnboundedQueue : public IQueue {
-    // здесь ваш код
+    std::mutex mutex_;
+    std::condition_variable not_empty_;
+    std::queue<std::function<void()>> queue_;
+
 public:
-    explicit UnboundedQueue(int capacity);
+    explicit UnboundedQueue();
 
     void push(std::function<void()> task) override;
 

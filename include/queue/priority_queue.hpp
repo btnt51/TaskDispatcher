@@ -1,27 +1,26 @@
 #pragma once
-#include "queue/bounded_queue.hpp"
-#include "queue/unbounded_queue.hpp"
+#include "queue.hpp"
 #include "types.hpp"
 
-#include <atomic>
-#include <limits>
 #include <map>
 #include <memory>
 #include <mutex>
 #include <optional>
 #include <stdexcept>
-#include <unordered_map>
 
 namespace dispatcher::queue {
 
+struct unknown_priority   : std::runtime_error { using std::runtime_error::runtime_error; };
 class PriorityQueue {
-    // здесь ваш код
+    std::map<TaskPriority, std::shared_ptr<IQueue>> queues_;
+    std::mutex mutex_;
+    std::condition_variable condition_;
+    bool active_{false};
+
 public:
-    // explicit PriorityQueue(?);
+    explicit PriorityQueue(const std::map<TaskPriority, QueueOptions>& queues);
 
     void push(TaskPriority priority, std::function<void()> task);
-    // block on pop until shutdown is called
-    // after that return std::nullopt on empty queue
     std::optional<std::function<void()>> pop();
 
     void shutdown();

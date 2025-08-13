@@ -9,9 +9,11 @@
 namespace dispatcher {
 
 class TaskDispatcher {
-    // здесь ваш код
+    std::shared_ptr<queue::PriorityQueue> queue_;
+    thread_pool::ThreadPool thread_pool_;
 public:
-    // TaskDispatcher(size_t thread_count, ?);
+    TaskDispatcher(size_t thread_count = std::thread::hardware_concurrency(), const std::map<TaskPriority,
+        queue::QueueOptions> &queues = {{TaskPriority::High, {true, 1000}}, {TaskPriority::Normal, {false}}});
 
     void schedule(TaskPriority priority, std::function<void()> task);
     ~TaskDispatcher();
